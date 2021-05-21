@@ -1,0 +1,24 @@
+{
+  "name": "root",
+  "private": true,
+  "author": "Fox.ONE",
+  "repository": "https://github.com/fox-one/fe-tools",
+  "license": "GPL 3.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "resolutions": {
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "build": "foxone-dev-build-ts",
+    "build:release": "foxone-ci-ghact-build",
+    "lint": "foxone-dev-run-lint",
+    "test": "foxone-dev-run-test --coverage"
+  },
+  "devDependencies": {
+    "@foxone/dev": "workspace:packages/dev",
+    "copyfiles": "^2.4.1"
+  },
+  "version": "0.0.2-7"
+}
