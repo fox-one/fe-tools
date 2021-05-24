@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build": "foxone-dev-build-ts",
+    "build:extra": "(cd packages/dev && copyfiles config/* scripts/* build)",
     "build:release": "foxone-ci-ghact-build",
     "lint": "foxone-dev-run-lint",
     "test": "foxone-dev-run-test --coverage"
