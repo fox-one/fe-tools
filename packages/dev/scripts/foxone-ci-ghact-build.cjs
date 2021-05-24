@@ -12,11 +12,11 @@ const argv = require("yargs")
 const copySync = require("./copySync.cjs");
 const execSync = require("./execSync.cjs");
 
-const GH_PAT =  process.env.GH_PAT;
+const GH_PAT = process.env.GH_PAT;
 const NPM_TOKEN = process.env.NPM_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
 const GH_RELEASE_FILES = process.env.GH_RELEASE_FILES;
-const GITHUG_REF = process.env.GITHUG_REF;
+const GITHUB_REF = process.env.GITHUB_REF;
 const GH_RELEASE_GITHUB_API_TOKEN = GH_PAT;
 
 const repo = `https://${GH_PAT}@github.com/${GITHUB_REPOSITORY}.git`;
@@ -55,7 +55,7 @@ function npmSetup() {
 }
 
 function npmPublish() {
-  if (fs.execSync(".skip-npm")) {
+  if (fs.existsSync(".skip-npm")) {
     return;
   }
 
@@ -142,12 +142,11 @@ function gitPush() {
     } ${version} skip-checks: true"`
   );
 
-  execSync(`git push ${repo} HEAD:${GITHUG_REF}`, true);
+  console.log(`$ git push ${repo} HEAD:${GITHUB_REF}`);
+  execSync(`git push ${repo} HEAD:${GITHUB_REF}`, true);
 
   if (doGHRelease) {
-    const files = GH_RELEASE_FILES
-      ? `--assets ${GH_RELEASE_FILES}`
-      : "";
+    const files = GH_RELEASE_FILES ? `--assets ${GH_RELEASE_FILES}` : "";
 
     execSync(`yarn foxone-exec-ghrelease --draft ${files} --yes`);
   }
