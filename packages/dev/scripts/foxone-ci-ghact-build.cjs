@@ -63,6 +63,8 @@ function npmPublish() {
     .filter((file) => !fs.existsSync(path.join(process.cwd(), "build"), file))
     .forEach((file) => copySync(file, "build"));
 
+  process.chdir("build");
+
   const tag = npmGetVersion().includes("-") ? "-tag beta" : "";
   let count = 1;
 
