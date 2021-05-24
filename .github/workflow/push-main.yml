@@ -1,4 +1,4 @@
-name: Push Maser
+name: Push Main
 on:
   push:
     branches:
