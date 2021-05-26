@@ -68,6 +68,7 @@ function npmPublish() {
   const tag = npmGetVersion().includes("-") ? "-tag beta" : "";
   let count = 1;
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
       execSync(`npm publish --access public ${tag}`);

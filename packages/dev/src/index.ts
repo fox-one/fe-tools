@@ -29,7 +29,7 @@ export const echo = (value: EchoString, start = 0, end?: number): string => {
   return `${count}: ${A}: ${value}`.substr(start, end);
 };
 
-function asseter(a: boolean): void {
+function asseter(a: boolean) {
   if (!a) {
     console.log("Failed");
     process.exit(-1);

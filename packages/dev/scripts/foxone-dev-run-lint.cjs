@@ -19,6 +19,6 @@ if (!argv["skip-eslint"]) {
   const extra = process.env.GITHUB_REPO ? "" : "--fix";
 
   execSync(
-    `yarn foxone-exec-eslint ${extra} --resolve-plugins-relative-to ${__dirname} --ext .js,.cjs,.mjs,.ts,.tsx ${process.cwd()}`
+    `yarn foxone-exec-eslint ${extra} --resolve-plugins-relative-to ${__dirname} --ext .js,.cjs,.mjs,.ts,.tsx,.vue ${process.cwd()}`
   );
 }

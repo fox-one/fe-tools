@@ -18,7 +18,9 @@ madge("./", { fileExtensions: ["ts", "tsx"] })
     }
 
     circular.forEach((path, idx) => {
-      process.stdout.write(chalk.dim(`${(idx + 1).toString().padStart(4)}: `));
+      process.stdout.write(
+        chalk.dim(`${(Number(idx) + 1).toString().padStart(4)}: `)
+      );
 
       path.forEach((module, idx) => {
         if (idx) {

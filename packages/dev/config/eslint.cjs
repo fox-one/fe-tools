@@ -8,33 +8,36 @@ module.exports = {
     jest: true,
     node: true
   },
+  parser: "vue-eslint-parser",
+  parserOptions: {
+    parser: "@typescript-eslint/parser",
+    extraFileExtensions: [".cjs", ".mjs", ".vue"],
+    warnOnUnsupportedTypeScriptVersion: false
+  },
   extends: [
     "eslint:recommended",
-    require.resolve("eslint-config-standard"),
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:vue/recommended",
+    "@vue/typescript/recommended",
+    "@vue/prettier",
+    "@vue/prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
   overrides: [
     {
       files: ["*.js", "*.cjs", "*.mjs"],
       rules: {
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/no-unsafe-assignment": "off",
-        "@typescript-eslint/no-unsafe-return": "off",
-        "@typescript-eslint/no-unsafe-call": "off",
-        "@typescript-eslint/no-unsafe-member-access": "off",
-        "@typescript-eslint/no-var-requires": "off",
-        "@typescript-eslint/restrict-plus-operands": "off",
-        "@typescript-eslint/restrict-template-expressions": "off"
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      files: ["*.vue"],
+      rules: {
+        "sort-keys": "off"
       }
     }
   ],
-  parser: require.resolve("@typescript-eslint/parser"),
-  parserOptions: {
-    extraFileExtensions: [".cjs", ".mjs"],
-    warnOnUnsupportedTypeScriptVersion: false
-  },
   plugins: [
     "@typescript-eslint",
     "header",
@@ -45,11 +48,18 @@ module.exports = {
   rules: {
     quotes: ["error", "double"],
     indent: "off",
-    "on-use-before-define": "off",
     semi: [2, "always"],
     "no-extra-semi": 2,
+    "on-use-before-define": "off",
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/type-annotation-spacing": "error",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "arrow-parens": ["error", "always"],
     "default-param-last": [0],
     "padding-line-between-statements": [
