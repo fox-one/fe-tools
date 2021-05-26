@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const chalk = require("chalk");
 
 if (process.env.npm_execPath.includes("yarn")) {

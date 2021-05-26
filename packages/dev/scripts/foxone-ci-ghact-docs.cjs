@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const execSync = require("./execSync.cjs");
 
 const repo = `https://${process.env.GH_PAT}@github.com/${process.env.GITHUB_REPOSITORY}.git`;

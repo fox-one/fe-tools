@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const execSync = require("./execSync.cjs");
 
 console.log("$ foxone-dev-run-prettier", process.argv.slice(2).join("  "));
