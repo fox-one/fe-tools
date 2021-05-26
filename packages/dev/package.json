@@ -30,7 +30,7 @@
     "foxone-exec-tsc": "./scripts/foxone-exec-tsc.cjs",
     "foxone-exec-webpack": "./scripts/foxone-exec-webpack.cjs"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.13.16",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
