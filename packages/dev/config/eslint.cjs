@@ -60,6 +60,7 @@ module.exports = {
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-floating-promises": "off",
     "arrow-parens": ["error", "always"],
     "default-param-last": [0],
     "padding-line-between-statements": [

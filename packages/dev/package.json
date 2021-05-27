@@ -7,7 +7,7 @@
   "bugs": "https://github.com/fox-one/fe-tools/issues",
   "homepage": "https://github.com/fox-one/fe-tools",
   "license": "GPL 3.0",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "bin": {
     "foxone-ci-ghact-build": "./scripts/foxone-ci-ghact-build.cjs",
