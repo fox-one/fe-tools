@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable sort-keys */
+
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 const path = require("path");
@@ -87,8 +89,8 @@ function createMapEntry(rootDir, jsPath) {
   const field =
     otherPath !== jsPath && fs.existsSync(path.join(rootDir, otherPath))
       ? {
-          default: jsPath,
-          [otherReq]: otherPath
+          [otherReq]: otherPath,
+          default: jsPath
         }
       : jsPath;
 
