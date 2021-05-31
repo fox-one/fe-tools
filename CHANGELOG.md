@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.10
+- minor update
+
 ## 0.1.8
 - fix dev scripts
 
