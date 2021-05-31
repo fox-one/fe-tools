@@ -182,9 +182,18 @@ function buildExports() {
 async function buildJs(dir) {
   if (fs.existsSync(path.join(process.cwd(), ".skip-build"))) return;
 
-  const { name, version } = require(path.join(process.cwd(), "./package.json"));
+  const { name, scripts, version } = require(path.join(
+    process.cwd(),
+    "./package.json"
+  ));
 
   if (!name.startsWith("@foxone")) return;
+
+  if (scripts && scripts.build) {
+    execSync("yarn build");
+
+    return;
+  }
 
   console.log(`*** ${name} ${version}`);
 

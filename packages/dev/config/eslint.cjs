@@ -32,7 +32,7 @@ module.exports = {
       }
     },
     {
-      files: ["*.vue"],
+      files: ["*.vue", "*.tsx", "*.jsx"],
       rules: {
         "sort-keys": "off"
       }
