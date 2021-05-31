@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.1.10
+## 0.1.10-1
 - minor update
 
 ## 0.1.8
