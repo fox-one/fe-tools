@@ -148,9 +148,12 @@ function gitPush() {
   console.log(`$ git push ${repo} HEAD:${GITHUB_REF}`);
   execSync(`git push ${repo} HEAD:${GITHUB_REF}`, true);
 
+  console.log(`*** doGHRelase ${doGHRelease}`);
+
   if (doGHRelease) {
     const files = GH_RELEASE_FILES ? `--assets ${GH_RELEASE_FILES}` : "";
 
+    console.log(`$ yarn foxone-exec-ghrelease --draft ${files} --yes`);
     execSync(`yarn foxone-exec-ghrelease --draft ${files} --yes`);
   }
 }
