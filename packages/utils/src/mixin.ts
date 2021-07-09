@@ -32,3 +32,17 @@ export function loadMixinTheme() {
       win.MixinContext.reloadTheme();
   }
 }
+
+export function isDarkTheme() {
+  try {
+    const context = getMixinContext();
+
+    if (context?.appearance) {
+      return context.appearance === "dark";
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+}
