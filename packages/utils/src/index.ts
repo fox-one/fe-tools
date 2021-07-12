@@ -10,5 +10,7 @@ export { Http, Base64, helper, number, mixin };
 
 export default {
   helper,
+  mixin,
+  number,
   time
 };

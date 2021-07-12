@@ -80,11 +80,17 @@ export function toPrecision(opts: { n: BigNumber.Value; dp?: number }) {
 export function toPercent(opts: {
   n: BigNumber.Value;
   symbol?: boolean;
-  dp: number;
+  dp?: number;
 }) {
   const { dp = 2, n, symbol = false } = opts;
   const bn = new BigNumber(n);
   const s = symbol ? (bn.gte(0) ? "+" : "") : "";
 
   return `${s}${bn.multipliedBy(100).toFixed(dp)}%`;
+}
+
+export function toFixed(opts: { n: BigNumber.Value; p?: number }) {
+  const { n, p = 2 } = opts;
+
+  return new BigNumber(n).toFixed(p);
 }

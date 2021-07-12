@@ -64,6 +64,6 @@ export function relativeForamt(t: dayjs.ConfigType): string {
   return date.format(pattern);
 }
 
-export function format(t: string | Date, p = "YYYY-MM-DD HH:mm:ss"): string {
+export function format(t: dayjs.ConfigType, p = "YYYY-MM-DD HH:mm:ss"): string {
   return dayjs(t).format(p);
 }
