@@ -220,7 +220,9 @@ async function main() {
 
   process.chdir("packages");
 
-  execSync("yarn foxone-exec-tsc --emitDeclarationOnly --outdir ../build");
+  if (!fs.existsSync("../.skip-declare")) {
+    execSync("yarn foxone-exec-tsc --emitDeclarationOnly --outdir ../build");
+  }
 
   const dirs = fs
     .readdirSync(".")
