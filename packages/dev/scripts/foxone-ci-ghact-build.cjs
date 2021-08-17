@@ -59,7 +59,9 @@ function npmPublish() {
     return;
   }
 
-  if (!fs.existsSync(".npm-root")) {
+  const useBuildAsRoot = !fs.existsSync(".npm-root");
+
+  if (useBuildAsRoot) {
     ["LICENSE", "package.json"]
       .filter((file) => !fs.existsSync(path.join(process.cwd(), "build", file)))
       .forEach((file) => copySync(file, "build"));
@@ -89,7 +91,9 @@ function npmPublish() {
     }
   }
 
-  process.chdir("..");
+  if (useBuildAsRoot) {
+    process.chdir("..");
+  }
 }
 
 function gitSetup() {
