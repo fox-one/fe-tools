@@ -59,11 +59,13 @@ function npmPublish() {
     return;
   }
 
-  ["LICENSE", "package.json"]
-    .filter((file) => !fs.existsSync(path.join(process.cwd(), "build", file)))
-    .forEach((file) => copySync(file, "build"));
+  if (!fs.existsSync(".npm-root")) {
+    ["LICENSE", "package.json"]
+      .filter((file) => !fs.existsSync(path.join(process.cwd(), "build", file)))
+      .forEach((file) => copySync(file, "build"));
 
-  process.chdir("build");
+    process.chdir("build");
+  }
 
   const tag = npmGetVersion().includes("-") ? "-tag beta" : "";
   let count = 1;
