@@ -72,12 +72,17 @@ export function simplize(opts: { n: BigNumber.Value; locale?: string }) {
   return `${x.toPrecision(precision, BigNumber.ROUND_DOWN)}${units[i]}`;
 }
 
-export function toPrecision(opts: { n: BigNumber.Value; dp?: number }) {
+export function toPrecision(opts: {
+  n: BigNumber.Value;
+  dp?: number;
+  mode?: BigNumber.RoundingMode;
+}) {
   const dp = opts.dp || getDefaultDecimalPlace(opts.n);
+  const mode = opts.mode ?? BigNumber.ROUND_DOWN;
   const bn = new BigNumber(opts.n);
 
   return bn.dp() > dp
-    ? bn.decimalPlaces(dp, BigNumber.ROUND_DOWN).toFixed(dp)
+    ? bn.decimalPlaces(dp, mode).toFixed(dp)
     : Number(opts.n).toString();
 }
 
