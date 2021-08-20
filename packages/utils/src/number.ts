@@ -38,15 +38,19 @@ export function format(opts: {
   dp?: number;
   max_dp?: number;
   fixed?: boolean;
+  mode?: BigNumber.RoundingMode;
 }): string {
   const num = new BigNumber(opts.n);
+  const mode = opts.mode ?? BigNumber.ROUND_DOWN;
   let dp = opts.dp || getDefaultDecimalPlace(num);
 
   if (opts.max_dp) {
     dp = Math.min(dp, opts.max_dp);
   }
 
-  return opts.fixed ? num.toFormat(dp) : num.decimalPlaces(dp, 1).toFormat();
+  return opts.fixed
+    ? num.toFormat(dp, mode)
+    : num.decimalPlaces(dp, mode).toFormat();
 }
 
 export function setSimplizeConfigs(data: SimplizeConfigs) {

@@ -7,6 +7,7 @@ describe("time functions", () => {
   });
 
   it("relative time", () => {
+    console.log(toRelative("2021-05-10T10:16:48.753Z", 10));
     expect(typeof toRelative(new Date())).toEqual("string");
   });
 
@@ -18,8 +19,6 @@ describe("time functions", () => {
     const t2 = now.getTime() - 3600 * 48 * 1000;
 
     expect(relativeForamt(t1)).toEqual(dayjs(t1).format("HH:mm"));
-
-    console.log(relativeForamt(t2));
     expect(relativeForamt(t2)).toEqual(dayjs(t2).format("MM/DD HH:mm"));
   });
 });

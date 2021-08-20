@@ -35,6 +35,22 @@ describe("number functions", () => {
     });
   });
 
+  it("format rounding mode", () => {
+    const nums = [0.000000001];
+    const results1 = ["0"];
+    const results2 = ["0.00000001"];
+
+    nums.forEach((_, i) => {
+      expect(number.format({ n: nums[i] })).toEqual(results1[i]);
+    });
+
+    nums.forEach((_, i) => {
+      expect(number.format({ mode: BigNumber.ROUND_UP, n: nums[i] })).toEqual(
+        results2[i]
+      );
+    });
+  });
+
   it("format number", () => {
     const nums = [
       0.121212121212,

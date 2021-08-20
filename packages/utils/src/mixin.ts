@@ -19,6 +19,22 @@ export function isMixin() {
   return platform === "iOS" || platform === "Android";
 }
 
+export function setMixinTheme(color: string) {
+  document
+    .querySelectorAll("[name='theme-color']")
+    .forEach((node: any) => node.remove());
+
+  const meta = document.createElement("meta");
+
+  meta.name = "theme-color";
+  meta.content = color;
+  document.querySelector("head")?.appendChild(meta);
+
+  setTimeout(() => {
+    loadMixinTheme();
+  }, 50);
+}
+
 export function loadMixinTheme() {
   const platform = getMixinContext().platform;
   const win: any = window;

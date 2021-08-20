@@ -9,11 +9,11 @@ dayjs.extend(updateLocale);
 
 dayjs.updateLocale("en", {
   relativeTime: {
-    M: "1 M ago",
-    MM: "%d M ago",
+    M: "1 mouth ago",
+    MM: "%d mouth ago",
 
-    d: "1 D ago",
-    dd: "%d D ago",
+    d: "1 day ago",
+    dd: "%d day ago",
 
     h: "1 hr ago",
     hh: "%d hr ago",
@@ -23,8 +23,8 @@ dayjs.updateLocale("en", {
 
     s: "%d sec ago",
 
-    y: "1 Y ago",
-    yy: "%d Y ago"
+    y: "1 year ago",
+    yy: "%d year ago"
   }
 });
 
@@ -49,8 +49,12 @@ dayjs.updateLocale("zh", {
   }
 });
 
-export function toRelative(t: dayjs.ConfigType): string {
-  return dayjs().to(t, true);
+export function toRelative(t: dayjs.ConfigType, gap = 0): string {
+  if (gap && dayjs(t).isBefore(dayjs().subtract(gap, "day"), "day")) {
+    return format(t);
+  } else {
+    return dayjs().to(t, true);
+  }
 }
 
 export function relativeForamt(t: dayjs.ConfigType): string {
