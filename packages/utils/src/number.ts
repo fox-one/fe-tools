@@ -1,38 +1,42 @@
 import BigNumber from "bignumber.js";
 
-import type { SimplizeConfigs, NumberUtilConfigs } from "fe-utils/types/utils";
-
-export const configs: NumberUtilConfigs = {
-  simplize: {
-    en: {
-      precision: 3,
-      units: ["", "K", "M", "B", "T"]
-    },
-    ja: {
-      precision: 4,
-      units: ["", "万", "亿", "兆"]
-    },
-    zh: {
-      precision: 4,
-      units: ["", "万", "亿", "兆"]
-    }
-  }
-};
-
-export function bn(n: BigNumber.Value) {
-  return new BigNumber(n);
-}
-
-export function getDefaultDecimalPlace(n: BigNumber.Value) {
+/**
+ * get default decimal place depend on number value
+ *
+ * @export
+ * @param {BigNumber.Value} n
+ * @return {*}
+ */
+export function getDefaultDecimalPlace(n: BigNumber.Value): number {
   const num = new BigNumber(n);
 
   return num.gt(1e4) ? 2 : num.gt(1) ? 4 : 8;
 }
 
-export function symbology(n: number) {
+/**
+ * convert number to string with symbol sign
+ *
+ * @export
+ * @param {number} n
+ * @return {*}
+ */
+export function symbology(n: number): string {
   return n >= 0 ? `+${n}` : `${n}`;
 }
 
+/**
+ * format number with certain decimal place
+ *
+ * @export
+ * @param {{
+ *   n: BigNumber.Value;
+ *   dp?: number;
+ *   max_dp?: number;
+ *   fixed?: boolean;
+ *   mode?: BigNumber.RoundingMode;
+ * }} opts
+ * @return {*}  {string}
+ */
 export function format(opts: {
   n: BigNumber.Value;
   dp?: number;
@@ -53,25 +57,46 @@ export function format(opts: {
     : num.decimalPlaces(dp, mode).toFormat();
 }
 
-export function setSimplizeConfigs(data: SimplizeConfigs) {
-  configs.simplize = data;
+/**
+ * format simplize number with Intl
+ *
+ * @export
+ * @param {{
+ *   n: number;
+ *   locale?: string;
+ *   dp?: number;
+ *   configs?: Partial<Intl.NumberFormatOptions>;
+ * }} opts
+ * @return {*}
+ */
+export function simplize(opts: {
+  n: number;
+  locale?: string;
+  dp?: number;
+  configs?: Partial<Intl.NumberFormatOptions>;
+}) {
+  const configs = opts.configs ?? {};
+  const intl = new Intl.NumberFormat(opts.locale, {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+    notation: "compact",
+    ...configs
+  });
+
+  return intl.format(opts.n);
 }
 
-export function simplize(opts: { n: BigNumber.Value; locale?: string }) {
-  const { locale = "en", n } = opts;
-  const { precision, units } = configs.simplize[locale];
-  const step = 10 ** precision;
-  let x = new BigNumber(n);
-  let i = 0;
-
-  while (x.gte(step) && !!units[i + 1]) {
-    x = new BigNumber(x.dividedBy(step).toPrecision(precision));
-    i += 1;
-  }
-
-  return `${x.toPrecision(precision, BigNumber.ROUND_DOWN)}${units[i]}`;
-}
-
+/**
+ * change number to certain decimal place without format number
+ *
+ * @export
+ * @param {{
+ *   n: BigNumber.Value;
+ *   dp?: number;
+ *   mode?: BigNumber.RoundingMode;
+ * }} opts
+ * @return {*}
+ */
 export function toPrecision(opts: {
   n: BigNumber.Value;
   dp?: number;
@@ -86,6 +111,17 @@ export function toPrecision(opts: {
     : Number(opts.n).toString();
 }
 
+/**
+ * change number to equal percent format
+ *
+ * @export
+ * @param {{
+ *   n: BigNumber.Value;
+ *   symbol?: boolean;
+ *   dp?: number;
+ * }} opts
+ * @return {*}
+ */
 export function toPercent(opts: {
   n: BigNumber.Value;
   symbol?: boolean;
@@ -98,6 +134,13 @@ export function toPercent(opts: {
   return `${s}${bn.multipliedBy(100).toFixed(dp)}%`;
 }
 
+/**
+ * get fixed number
+ *
+ * @export
+ * @param {{ n: BigNumber.Value; p?: number }} opts
+ * @return {*}
+ */
 export function toFixed(opts: { n: BigNumber.Value; p?: number }) {
   const { n, p = 2 } = opts;
 

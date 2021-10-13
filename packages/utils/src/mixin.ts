@@ -62,3 +62,15 @@ export function isDarkTheme() {
 
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
 }
+
+export function genPaymentUrl(data: {
+  recipient: string;
+  assetId: string;
+  amount: string;
+  traceId: string;
+  memo: string;
+}) {
+  const { amount, assetId, memo, recipient, traceId } = data;
+
+  return `mixin://pay?recipient=${recipient}&asset=${assetId}&amount=${amount}&trace=${traceId}&memo=${memo}`;
+}

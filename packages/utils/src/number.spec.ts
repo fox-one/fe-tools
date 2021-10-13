@@ -2,21 +2,6 @@ import BigNumber from "bignumber.js";
 import * as number from "./number";
 
 describe("number functions", () => {
-  it("use bignumber", () => {
-    const num = number.bn("100");
-
-    expect(num instanceof BigNumber).toEqual(true);
-  });
-
-  it("get decimal places", () => {
-    const nums = [0.1, 10.1212, -120.423];
-    const results = [1, 4, 3];
-
-    nums.forEach((_, i) => {
-      expect(number.bn(nums[i]).dp()).toEqual(results[i]);
-    });
-  });
-
   it("get default decimal places", () => {
     const nums = [0.000111, 1.1, 11111.12];
     const results = [8, 4, 2];
@@ -108,19 +93,19 @@ describe("simplize number", () => {
   it("simplize number", () => {
     const simplize = number.simplize;
 
-    expect(simplize({ locale: "en", n: 100000.1 })).toEqual("100K");
-    expect(simplize({ locale: "en", n: 100000 })).toEqual("100K");
-    expect(simplize({ locale: "en", n: 999999 })).toEqual("1.00M");
-    expect(simplize({ locale: "en", n: 1000000 })).toEqual("1.00M");
-    expect(simplize({ locale: "en", n: 1000001 })).toEqual("1.00M");
-    expect(simplize({ locale: "en", n: 1588098921 })).toEqual("1.59B");
+    expect(simplize({ locale: "en-US", n: 100000.1 })).toEqual("100.00K");
+    expect(simplize({ locale: "en-US", n: 100000 })).toEqual("100.00K");
+    expect(simplize({ locale: "en-US", n: 999999 })).toEqual("1.00M");
+    expect(simplize({ locale: "en-US", n: 1000000 })).toEqual("1.00M");
+    expect(simplize({ locale: "en-US", n: 1000001 })).toEqual("1.00M");
+    expect(simplize({ locale: "en-US", n: 1588098921 })).toEqual("1.59B");
 
-    expect(simplize({ locale: "zh", n: 100000.1 })).toEqual("10.00万");
-    expect(simplize({ locale: "zh", n: 100000 })).toEqual("10.00万");
-    expect(simplize({ locale: "zh", n: 999999 })).toEqual("100.0万");
-    expect(simplize({ locale: "zh", n: 1000000 })).toEqual("100.0万");
-    expect(simplize({ locale: "zh", n: 1000001 })).toEqual("100.0万");
-    expect(simplize({ locale: "zh", n: 1588598921 })).toEqual("15.89亿");
+    expect(simplize({ locale: "zh-CN", n: 100000.1 })).toEqual("10.00万");
+    expect(simplize({ locale: "zh-CN", n: 100000 })).toEqual("10.00万");
+    expect(simplize({ locale: "zh-CN", n: 999999 })).toEqual("100.00万");
+    expect(simplize({ locale: "zh-CN", n: 1000000 })).toEqual("100.00万");
+    expect(simplize({ locale: "zh-CN", n: 1000001 })).toEqual("100.00万");
+    expect(simplize({ locale: "zh-CN", n: 1588598921 })).toEqual("15.89亿");
   });
 });
 
