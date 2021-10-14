@@ -30,15 +30,18 @@ export const currencies = {
  * }} opts
  * @return {*}
  */
-export function toFiat(opts: {
-  n: BigNumber.Value;
-  to: string;
-  rates: { code: string; rate: string }[];
-  locale: string;
-  from?: string;
-  intl?: boolean;
-  configs?: Partial<Intl.NumberFormatOptions>;
-}) {
+export function toFiat(
+  opts: {
+    n: BigNumber.Value;
+    to: string;
+    rates: { code: string; rate: string }[];
+    locale: string;
+    from?: string;
+    intl?: boolean;
+    configs?: Partial<Intl.NumberFormatOptions>;
+  },
+  part = false
+) {
   const from = opts.from ?? "USD";
   const to = opts.to ?? "USD";
   const intl = opts.intl ?? true;
@@ -62,6 +65,10 @@ export function toFiat(opts: {
       style: "currency",
       ...configs
     });
+
+    if (part) {
+      return currencyIntl.formatToParts(value);
+    }
 
     return currencyIntl.format(value);
   }
