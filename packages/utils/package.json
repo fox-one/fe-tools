@@ -1,7 +1,7 @@
 {
   "name": "@foxone/utils",
   "description": "FoxONE FE utils library",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "author": "Fox.ONE",
   "repository": "github:fox-one/fe-tools",
   "bugs": "https://github.com/fox-one/fe-tools/issues",
