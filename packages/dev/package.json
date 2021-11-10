@@ -1,6 +1,6 @@
 {
   "name": "@foxone/dev",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "Shared CI scripts and development environment",
   "author": "Fox.ONE",
   "repository": "github:fox-one/fe-tools",
