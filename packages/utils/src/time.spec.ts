@@ -1,5 +1,4 @@
-import dayjs from "dayjs";
-import { format, relativeForamt, toRelative } from "./time";
+import { format, toRelative } from "./time";
 
 describe("time functions", () => {
   it("format time", () => {
