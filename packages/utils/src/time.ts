@@ -1,7 +1,14 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime.js";
 import updateLocale from "dayjs/plugin/updateLocale.js";
+
+// locales
 import "dayjs/locale/zh.js";
+import "dayjs/locale/ja.js";
+import "dayjs/locale/ko.js";
+import "dayjs/locale/de.js";
+import "dayjs/locale/fr.js";
+import "dayjs/locale/es.js";
 
 dayjs.extend(relativeTime);
 
@@ -55,17 +62,6 @@ export function toRelative(t: dayjs.ConfigType, gap = 0): string {
   } else {
     return dayjs().to(t, true);
   }
-}
-
-export function relativeForamt(t: dayjs.ConfigType): string {
-  const date = dayjs(t);
-  const pattern = date.isBefore(dayjs(), "day")
-    ? date.isBefore(dayjs(), "year")
-      ? "YYYY/MM/DD"
-      : "MM/DD HH:mm"
-    : "HH:mm";
-
-  return date.format(pattern);
 }
 
 export function format(t: dayjs.ConfigType, p = "YYYY-MM-DD HH:mm:ss"): string {

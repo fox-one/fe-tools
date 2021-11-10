@@ -61,3 +61,26 @@ export function isNotSupportIntersect(): boolean {
 
   return !window.IntersectionObserver;
 }
+
+/**
+ * detect locale from navigation language
+ *
+ * @export
+ * @param {string} [support=["en", "ja", "zh", "ko", "de", "fr", "es"]]
+ * @return {*}
+ */
+export function getLocale(
+  support = ["en", "ja", "zh", "ko", "de", "fr", "es"]
+) {
+  const lang = navigator.language.toLowerCase();
+
+  for (let ix = 0; ix < support.length; ix++) {
+    const locale = support[ix];
+
+    if (lang.includes(locale)) {
+      return locale;
+    }
+  }
+
+  return "en";
+}
