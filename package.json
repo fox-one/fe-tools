@@ -21,8 +21,5 @@
     "@foxone/dev": "workspace:packages/dev",
     "copyfiles": "^2.4.1"
   },
-  "version": "0.2.15",
-  "dependencies": {
-    "@formatjs/intl-numberformat": "^7.2.5"
-  }
+  "version": "0.2.15"
 }

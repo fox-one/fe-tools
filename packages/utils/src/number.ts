@@ -1,12 +1,4 @@
 import BigNumber from "bignumber.js";
-import "@formatjs/intl-numberformat/polyfill";
-import "@formatjs/intl-numberformat/locale-data/en";
-import "@formatjs/intl-numberformat/locale-data/fr";
-import "@formatjs/intl-numberformat/locale-data/ja";
-import "@formatjs/intl-numberformat/locale-data/zh";
-import "@formatjs/intl-numberformat/locale-data/ko";
-import "@formatjs/intl-numberformat/locale-data/de";
-import "@formatjs/intl-numberformat/locale-data/es";
 
 /**
  * get default decimal place depend on number value

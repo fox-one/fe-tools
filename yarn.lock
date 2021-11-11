@@ -1581,6 +1581,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@foxone/utils@workspace:packages/utils"
   dependencies:
+    "@formatjs/intl-numberformat": ^7.2.5
     axios: ^0.21.1
     bignumber.js: ^9.0.1
     dayjs: ^1.10.4
@@ -9263,7 +9264,6 @@ resolve@^2.0.0-next.3:
   version: 0.0.0-use.local
   resolution: "root@workspace:."
   dependencies:
-    "@formatjs/intl-numberformat": ^7.2.5
     "@foxone/dev": "workspace:packages/dev"
     copyfiles: ^2.4.1
   languageName: unknown
