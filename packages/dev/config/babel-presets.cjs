@@ -10,9 +10,7 @@ const CONFIG_CJS = {
 
 const CONFIG_ESM = {
   modules: false,
-  targets: {
-    node: "current"
-  }
+  targets: "> 0.25%, not dead"
 };
 
 module.exports = function (isEsm) {
