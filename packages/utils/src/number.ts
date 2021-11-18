@@ -1,5 +1,8 @@
 import BigNumber from "bignumber.js";
 
+// set exponential
+BigNumber.config({ EXPONENTIAL_AT: 12 });
+
 /**
  * get default decimal place depend on number value
  *
