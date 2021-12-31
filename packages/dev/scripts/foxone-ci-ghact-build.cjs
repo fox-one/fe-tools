@@ -171,9 +171,10 @@ function loopFunc(fn) {
         const pkgDir = path.join(process.cwd(), "packages", dir);
 
         return (
-          fs.statSync(pkgDir).isDirectory() &&
-          fs.existsSync(path.join(pkgDir, "package.json")) &&
-          fs.existsSync(path.join(pkgDir, "build"))
+          (fs.statSync(pkgDir).isDirectory() &&
+            fs.existsSync(path.join(pkgDir, "package.json")) &&
+            fs.existsSync(path.join(pkgDir, "build"))) ||
+          fs.existsSync(path.join(pkgDir, ".npm-root"))
         );
       })
       .forEach((dir) => {

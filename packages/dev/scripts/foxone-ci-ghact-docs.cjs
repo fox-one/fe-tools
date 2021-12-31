@@ -4,7 +4,7 @@ const execSync = require("./execSync.cjs");
 
 const repo = `https://${process.env.GH_PAT}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
 
-console.log("$ polkadot-ci-ghact-docs", process.argv.slice(2).join(" "));
+console.log("$ foxone-ci-ghact-docs", process.argv.slice(2).join(" "));
 
 execSync("git config push.default simple");
 execSync("git config merge.ours.driver true");
