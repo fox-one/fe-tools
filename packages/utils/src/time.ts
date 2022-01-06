@@ -16,8 +16,8 @@ dayjs.extend(updateLocale);
 
 dayjs.updateLocale("en", {
   relativeTime: {
-    M: "1 mouth ago",
-    MM: "%d mouth ago",
+    M: "1 month ago",
+    MM: "%d month ago",
 
     d: "1 day ago",
     dd: "%d day ago",
