@@ -1,34 +1,12 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosInstance,
-  AxiosResponse,
-  Method
-} from "axios";
-
-export type RequestInterceptor = [
-  (
-    value: AxiosRequestConfig
-  ) => AxiosRequestConfig | Promise<AxiosRequestConfig>,
-  ((error: unknown) => unknown) | undefined
-];
-
-export type ResponseInterceptor = [
-  (
-    | ((
-        value: AxiosResponse<unknown>
-      ) => AxiosResponse<unknown> | Promise<AxiosResponse<unknown>>)
-    | undefined
-  ),
-  ((error: unknown) => unknown) | undefined
-];
+import axios, { AxiosRequestConfig, AxiosInstance, Method } from "axios";
 
 export default class Http {
   instance: AxiosInstance;
 
   constructor(
     defaults: AxiosRequestConfig,
-    requestInterceptors: RequestInterceptor[],
-    responseInterceptors: ResponseInterceptor[]
+    requestInterceptors: any[],
+    responseInterceptors: any[]
   ) {
     this.instance = axios.create(defaults);
 
@@ -45,37 +23,37 @@ export default class Http {
     this.instance.defaults.baseURL = options.baseURL;
   }
 
-  async request(options: AxiosRequestConfig): Promise<unknown> {
+  async request(options: AxiosRequestConfig): Promise<any> {
     const res = await this.instance.request(options);
 
     return Promise.resolve(res);
   }
 
-  post(url: string, options: AxiosRequestConfig = {}): Promise<unknown> {
+  post(url: string, options: AxiosRequestConfig = {}): Promise<any> {
     const method: Method = "POST";
 
     return this.request({ method, url, ...options });
   }
 
-  put(url: string, options: AxiosRequestConfig = {}): Promise<unknown> {
+  put(url: string, options: AxiosRequestConfig = {}): Promise<any> {
     const method: Method = "PUT";
 
     return this.request({ method, url, ...options });
   }
 
-  patch(url: string, options: AxiosRequestConfig = {}): Promise<unknown> {
+  patch(url: string, options: AxiosRequestConfig = {}): Promise<any> {
     const method: Method = "PATCH";
 
     return this.request({ method, url, ...options });
   }
 
-  get(url: string, options: AxiosRequestConfig = {}): Promise<unknown> {
+  get(url: string, options: AxiosRequestConfig = {}): Promise<any> {
     const method: Method = "GET";
 
     return this.request({ method, url, ...options });
   }
 
-  delete(url: string, options: AxiosRequestConfig = {}): Promise<unknown> {
+  delete(url: string, options: AxiosRequestConfig = {}): Promise<any> {
     const method: Method = "DELETE";
 
     return this.request({ method, url, ...options });
