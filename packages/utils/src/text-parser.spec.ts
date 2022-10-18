@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-import * as text from "./text";
+import * as text from "./text-parser";
 
 describe("text parser methods", () => {
   it("scanPrefix", () => {
