@@ -35,7 +35,7 @@ export function toFiat(
     n: BigNumber.Value;
     to: string;
     rates: { code: string; rate: string }[];
-    locale: string;
+    locale?: string;
     from?: string;
     intl?: boolean;
     configs?: Partial<Intl.NumberFormatOptions>;
