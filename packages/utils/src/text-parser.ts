@@ -6,37 +6,10 @@ const defaultConfig = {
   clsLinkToken: `${clsPrefix}-token-link`
 };
 
-export function assetTokenParserProc(
-  vm: TextParser,
-  input: string,
-  pos: number,
-  params: Record<string, any>
-) {
-  const recognized = vm.scanPrefix(input, pos, "$");
-
-  if (recognized === -1) {
-    return { recognized, result: null };
-  }
-
-  let token = null;
-  const r: any = vm.parseAssetToken(input, pos);
-
-  if (r !== null) {
-    token = {
-      t: "asset",
-      v: { label: r.label, symbol: r.symbol }
-    };
-  }
-
-  return { pos: r.pos, recognized, token };
-}
-
-export function assetTokenFormatter(vm, token) {
-  return vm.templateFn["asset"](token.v.symbol, token.v.label);
-}
-
 export class TextParser {
   private config = defaultConfig;
+
+  private debugMode = false;
 
   private templateFn = {
     asset: (symbol, label) =>
@@ -47,7 +20,7 @@ export class TextParser {
       }</a>`
   };
 
-  private parsers = [];
+  private parsers: any = [];
 
   constructor(
     cfg: Record<string, any> = {},
@@ -64,9 +37,23 @@ export class TextParser {
     this.config = Object.assign(defaultConfig, cfg);
 
     // add builtin parsers
-    this.addParser(assetTokenParserProc, assetTokenFormatter, {
+    // asset token parser
+    this.addParser(this.assetTokenParserProc, this.assetTokenFormatter, {
       tokenName: "asset"
     });
+
+    // link token parser
+    for (let ix = 0; ix < linkPrefixes.length; ix++) {
+      const prefix = linkPrefixes[ix];
+
+      this.addParser(
+        this.linkTokenParserProcGen(prefix),
+        this.linkTokenFormatter,
+        {
+          tokenName: "link"
+        }
+      );
+    }
 
     // add customized parsers
     if (customizedParsers?.length) {
@@ -78,8 +65,16 @@ export class TextParser {
     }
   }
 
-  addParser(proc, formatter, parserParams: Record<string, any>) {
-    this.parsers.push({
+  /**
+   * add a customized parser.
+   *
+   * @param {Function} proc
+   * @param {Function} formatter
+   * @param {Record<string, any>} params
+   * @return {*}
+   */
+  addParser(proc, formatter: any, parserParams: Record<string, any>) {
+    return this.parsers.push({
       formatter,
       params: parserParams,
       proc: proc
@@ -102,6 +97,72 @@ export class TextParser {
     }
 
     return -1;
+  }
+
+  public debug() {
+    this.debugMode = true;
+
+    return this;
+  }
+
+  private linkTokenParserProcGen = (prefix: string) => {
+    return (
+      self: TextParser,
+      input: string,
+      pos: number,
+      params: Record<string, any>
+    ) => {
+      const recognized = self.scanPrefix(input, pos, prefix);
+
+      if (recognized === -1) {
+        return { recognized, result: null };
+      }
+
+      const r: any = self.parseLinkToken(input, pos, prefix);
+      let token: any = null;
+
+      if (r !== null) {
+        token = {
+          t: "link",
+          v: { url: r.url }
+        };
+      }
+
+      return { pos: r.pos, recognized, token };
+    };
+  };
+
+  private linkTokenFormatter(self, token) {
+    return this.templateFn["link"](token.v.url, token.v.url);
+  }
+
+  private assetTokenParserProc = (
+    self: TextParser,
+    input: string,
+    pos: number,
+    params: Record<string, any>
+  ) => {
+    const recognized = self.scanPrefix(input, pos, "$");
+
+    if (recognized === -1) {
+      return { recognized, result: null };
+    }
+
+    let token: any = null;
+    const r: any = self.parseAssetToken(input, pos);
+
+    if (r !== null) {
+      token = {
+        t: "asset",
+        v: { label: r.label, symbol: r.symbol }
+      };
+    }
+
+    return { pos: r.pos, recognized, token };
+  };
+
+  private assetTokenFormatter(self, token) {
+    return this.templateFn["asset"](token.v.symbol, token.v.label);
   }
 
   /**
@@ -190,6 +251,7 @@ export class TextParser {
       iter += 1;
       const ch = input[pos];
 
+      // process with parsers, generate tokens
       for (let ix = 0; ix < this.parsers.length; ix++) {
         const parser = this.parsers[ix];
         const {
@@ -206,30 +268,6 @@ export class TextParser {
             tokens.push({ t: "ch", v: ch });
             pos += 1;
           }
-        }
-      }
-
-      // check link token
-      for (let ix = 0; ix < linkPrefixes.length; ix++) {
-        const prefix = linkPrefixes[ix];
-
-        const nextPos = this.scanPrefix(input, pos, prefix);
-
-        if (nextPos !== -1) {
-          const pt: any = this.parseLinkToken(input, pos, prefix);
-
-          if (pt !== null) {
-            tokens.push({
-              t: "link",
-              v: { url: pt.url }
-            });
-            pos = pt.pos;
-          } else {
-            tokens.push({ t: "ch", v: ch });
-            pos += 5;
-          }
-
-          continue;
         }
       }
 
@@ -255,6 +293,10 @@ export class TextParser {
       pos += 1;
     }
 
+    if (this.debugMode) {
+      console.log("parseTokens:", tokens);
+    }
+
     return tokens;
   }
 
@@ -269,20 +311,17 @@ export class TextParser {
         case "tag":
           ret.push(token.v);
           break;
-        case "link":
-          ret.push(this.templateFn["link"](token.v.url, token.v.url));
-          break;
       }
 
       // @TODO use map to improve performance.
       for (let ix = 0; ix < this.parsers.length; ix++) {
         const parser = this.parsers[ix];
 
-        if (token.t !== parser.params.tokenName) {
-          continue;
-        }
+        if (token.t === parser.params.tokenName) {
+          ret.push(parser.formatter(this, token));
 
-        ret.push(parser.formatter(this, token));
+          break;
+        }
       }
     }
 
