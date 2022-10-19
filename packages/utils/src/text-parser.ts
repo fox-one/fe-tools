@@ -132,9 +132,9 @@ export class TextParser {
     };
   };
 
-  private linkTokenFormatter(self, token) {
-    return this.templateFn["link"](token.v.url, token.v.url);
-  }
+  private linkTokenFormatter = (self: TextParser, token) => {
+    return self.templateFn["link"](token.v.url, token.v.url);
+  };
 
   private assetTokenParserProc = (
     self: TextParser,
@@ -161,9 +161,9 @@ export class TextParser {
     return { pos: r.pos, recognized, token };
   };
 
-  private assetTokenFormatter(self, token) {
-    return this.templateFn["asset"](token.v.symbol, token.v.label);
-  }
+  private assetTokenFormatter = (self: TextParser, token) => {
+    return self.templateFn["asset"](token.v.symbol, token.v.label);
+  };
 
   /**
    * try to parse an asset token from input[pos:]; if failed, return null
