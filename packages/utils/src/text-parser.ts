@@ -301,10 +301,6 @@ export class TextParser {
       hashTag += ch;
     }
 
-    if (this.debugMode) {
-      console.log(hashTag);
-    }
-
     if (hashTag.length === 0) {
       return null;
     }
