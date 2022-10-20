@@ -3,7 +3,9 @@ const clsPrefix = "--fe-text-parser";
 
 const defaultConfig = {
   clsAssetToken: `${clsPrefix}-token-asset`,
-  clsLinkToken: `${clsPrefix}-token-link`
+  clsHashTagToken: `${clsPrefix}-token-hash-tag`,
+  clsLinkToken: `${clsPrefix}-token-link`,
+  clsUserToken: `${clsPrefix}-token-user`
 };
 
 export class TextParser {
@@ -14,6 +16,8 @@ export class TextParser {
   private templateFn = {
     asset: (symbol, label) =>
       `<span class="${this.config.clsAssetToken}" data-symbol="${symbol}">${label}</span>`,
+    hashTag: (hashTag, label: string) =>
+      `<span class="${this.config.clsHashTagToken}" data-hash-tag="${hashTag}">${label}</span>`,
     link: (url, label: string) =>
       `<a class="${this.config.clsLinkToken}" href="${url}" target="_blank">${
         label || url
@@ -37,11 +41,6 @@ export class TextParser {
     this.config = Object.assign(defaultConfig, cfg);
 
     // add builtin parsers
-    // asset token parser
-    this.addParser(this.assetTokenParserProc, this.assetTokenFormatter, {
-      tokenName: "asset"
-    });
-
     // link token parser
     for (let ix = 0; ix < linkPrefixes.length; ix++) {
       const prefix = linkPrefixes[ix];
@@ -54,6 +53,18 @@ export class TextParser {
         }
       );
     }
+
+    // asset token parser
+    this.addParser(this.assetTokenParserProc, this.assetTokenFormatter, {
+      tokenName: "asset"
+    });
+
+    // hash tag token parser
+    this.addParser(this.hashTagTokenParserProc, this.hashTagTokenFormatter, {
+      tokenName: "hashTag"
+    });
+
+    // user token parser
 
     // add customized parsers
     if (customizedParsers?.length) {
@@ -132,10 +143,6 @@ export class TextParser {
     };
   };
 
-  private linkTokenFormatter = (self: TextParser, token) => {
-    return self.templateFn["link"](token.v.url, token.v.url);
-  };
-
   private assetTokenParserProc = (
     self: TextParser,
     input: string,
@@ -161,8 +168,41 @@ export class TextParser {
     return { pos: r.pos, recognized, token };
   };
 
+  private hashTagTokenParserProc = (
+    self: TextParser,
+    input: string,
+    pos: number,
+    params: Record<string, any>
+  ) => {
+    const recognized = self.scanPrefix(input, pos, "#");
+
+    if (recognized === -1) {
+      return { recognized, result: null };
+    }
+
+    let token: any = null;
+    const r: any = self.parseHashTagToken(input, pos);
+
+    if (r !== null) {
+      token = {
+        t: "hashTag",
+        v: { hashTag: r.hashTag, label: r.label }
+      };
+    }
+
+    return { pos: r.pos, recognized, token };
+  };
+
+  private linkTokenFormatter = (self: TextParser, token) => {
+    return self.templateFn["link"](token.v.url, token.v.url);
+  };
+
   private assetTokenFormatter = (self: TextParser, token) => {
     return self.templateFn["asset"](token.v.symbol, token.v.label);
+  };
+
+  private hashTagTokenFormatter = (self: TextParser, token) => {
+    return self.templateFn["hashTag"](token.v.hashTag, token.v.label);
   };
 
   /**
@@ -237,6 +277,44 @@ export class TextParser {
   }
 
   /**
+   * try to parse a hash tag token from input[pos:]; if failed, return null
+   *
+   * @param {string} input
+   * @param {number} pos
+   * @return {*}
+   */
+  public parseHashTagToken(input: string, pos: number) {
+    let hashTag = "";
+
+    pos += 1; // ignore the leading ch '#'
+
+    for (let ix = pos; ix < input.length; ix++) {
+      const ch = input[ix];
+
+      // \u4e00-\u9fa5\u3300-\u33ff: CJK 汉字和扩展
+      if (
+        !/[a-zA-Z0-9\u4e00-\u9fa5\u3300-\u33ffぁ-ゔゞァ-・ヽヾ゛゜ー]/.test(ch)
+      ) {
+        break;
+      }
+
+      hashTag += ch;
+    }
+
+    if (hashTag.length === 0) {
+      return null;
+    }
+
+    const newPos = pos + hashTag.length;
+
+    return {
+      hashTag,
+      label: `#${hashTag}`,
+      pos: newPos
+    };
+  }
+
+  /**
    * parse a input string into tokens
    *
    * @param {string} input
@@ -244,12 +322,12 @@ export class TextParser {
    * @return {*}
    */
   public parseTokens(input, pos) {
-    let iter = 0;
     const tokens: any = [];
 
-    while (pos < input.length && iter < 150) {
-      iter += 1;
+    while (pos < input.length) {
       const ch = input[pos];
+
+      let found = false;
 
       // process with parsers, generate tokens
       for (let ix = 0; ix < this.parsers.length; ix++) {
@@ -264,11 +342,18 @@ export class TextParser {
           if (token !== null) {
             tokens.push(token);
             pos = nextPos;
+            found = true;
+            break;
           } else {
             tokens.push({ t: "ch", v: ch });
             pos += 1;
           }
         }
+      }
+
+      // a parser has already handle the current character, so move to next iteration.
+      if (found) {
+        continue;
       }
 
       // check \n
@@ -289,6 +374,7 @@ export class TextParser {
         continue;
       }
 
+      // a simple character? push it.
       tokens.push({ t: "ch", v: ch });
       pos += 1;
     }
@@ -300,7 +386,13 @@ export class TextParser {
     return tokens;
   }
 
-  public tokensToString(tokens, params) {
+  /**
+   * format an array of tokens into a string
+   *
+   * @param {Array<any>} tokens
+   * @return {*}
+   */
+  public tokensToString(tokens) {
     const ret: any = [];
 
     for (let ix = 0; ix < tokens.length; ix++) {
@@ -328,9 +420,15 @@ export class TextParser {
     return ret.join("");
   }
 
-  public parse(input, params) {
+  /**
+   * parse a input string into a new string
+   *
+   * @param {string} input
+   * @return {*}
+   */
+  public parse(input) {
     const tokens = this.parseTokens(input, 0);
 
-    return this.tokensToString(tokens, params);
+    return this.tokensToString(tokens);
   }
 }

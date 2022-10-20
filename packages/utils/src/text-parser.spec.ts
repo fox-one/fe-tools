@@ -69,18 +69,43 @@ describe("text parser methods", () => {
     });
   });
 
-  it("runParser", () => {
+  it("parseHashTagToken", () => {
     const ts: any = [
-      ["I have 1 $BTC for my family.\npls visit https://pando.im to learn more"]
+      ["Buy $BTC, #ShortTheWorld.", 10],
+      ["Buy $BTC, #做空全世界", 10],
+      ["Buy $BTC, #ショートザワールド", 10]
     ];
     const results = [
-      'I have 1 <span class="--fe-text-parser-token-asset" data-symbol="BTC">$BTC</span> for my family.<br/>pls visit <a class="--fe-text-parser-token-link" href="https://pando.im" target="_blank">https://pando.im</a> to learn more'
+      { hashTag: "ShortTheWorld", label: "#ShortTheWorld", pos: 24 },
+      { hashTag: "做空全世界", label: "#做空全世界", pos: 16 },
+      {
+        hashTag: "ショートザワールド",
+        label: "#ショートザワールド",
+        pos: 20
+      }
     ];
 
     const parser = new text.TextParser();
 
     ts.forEach((_, i) => {
-      const r = parser.parse(ts[i][0], {});
+      expect(parser.parseHashTagToken(ts[i][0], ts[i][1])).toEqual(results[i]);
+    });
+  });
+
+  it("runParser", () => {
+    const ts: any = [
+      [
+        "I have 1 $BTC for my #Family.\npls visit https://pando.im to learn more"
+      ]
+    ];
+    const results = [
+      'I have 1 <span class="--fe-text-parser-token-asset" data-symbol="BTC">$BTC</span> for my <span class="--fe-text-parser-token-hash-tag" data-hash-tag="Family">#Family</span>.<br/>pls visit <a class="--fe-text-parser-token-link" href="https://pando.im" target="_blank">https://pando.im</a> to learn more'
+    ];
+
+    const parser = new text.TextParser();
+
+    ts.forEach((_, i) => {
+      const r = parser.parse(ts[i][0]);
 
       // console.log(r);
       expect(r).toEqual(results[i]);
@@ -89,10 +114,10 @@ describe("text parser methods", () => {
 
   it("runCustomizedParser", () => {
     const ts: any = [
-      ["I have 1 $BTC for my family.\npls ask @Lyric to learn more"]
+      ["I have 1 $BTC for my family.\npls ask @john to learn more"]
     ];
     const results = [
-      'I have 1 <span class="--fe-text-parser-token-asset asset-token-cls" data-symbol="BTC">$BTC</span> for my family.<br/>pls ask <em class="username" data-username="Lyric">@Lyric</em> to learn more'
+      'I have 1 <span class="--fe-text-parser-token-asset asset-token-cls" data-symbol="BTC">$BTC</span> for my family.<br/>pls ask <em class="username" data-username="john">@John Smith</em> to learn more'
     ];
 
     const tokenName = "user";
@@ -101,7 +126,7 @@ describe("text parser methods", () => {
       clsAssetToken: "asset-token-cls"
     };
 
-    const extractName = function (input, pos: number) {
+    const extractName = function (input, pos: number, users: Array<any>) {
       let username = "";
 
       pos += 1; // ignore the first ch '@'
@@ -122,48 +147,68 @@ describe("text parser methods", () => {
 
       const newPos = pos + username.length;
 
+      const u = users.find((val) => {
+        return val.username === username;
+      });
+
       return {
-        label: `@${username}`,
+        id: u?.id || "",
+        label: `@${u?.fullname || username}`,
         pos: newPos,
-        username
+        username: username
       };
     };
 
-    const proc = function (vm, input, pos, params) {
-      // mentioned users
-      const recognized = vm.scanPrefix(input, pos, "@");
+    const proc = function (parser, input, pos, params) {
+      const users = params.users;
+
+      const recognized = parser.scanPrefix(input, pos, "@");
 
       if (recognized === -1) {
         return { recognized, result: null };
       }
 
-      const r: any = extractName(input, pos);
+      const r: any = extractName(input, pos, users);
       let token: any = null;
 
       if (r !== null) {
         token = {
           t: tokenName,
-          v: { label: r.label, username: r.username }
+          v: { id: r.id, label: r.label, username: r.username }
         };
       }
 
       return { pos: r?.pos, recognized, token };
     };
 
-    const formatter = function (vm, token) {
+    const formatter = function (parser, token) {
       return `<em class="username" data-username="${token.v.username}">${token.v.label}</em>`;
     };
 
     const parser = new text.TextParser(cfg, [
       {
         formatter,
-        params: { tokenName },
+        params: {
+          tokenName,
+          users: [
+            {
+              fullname: "Lyric",
+              id: 1024,
+              username: "lyric"
+            },
+            {
+              fullname: "John Smith",
+              id: 1025,
+              username: "john"
+            }
+          ]
+        },
         proc
       }
     ]);
 
     ts.forEach((_, i) => {
-      const r = parser.parse(ts[i][0], {});
+      const r = parser.parse(ts[i][0]);
 
       // console.log(r);
       expect(r).toEqual(results[i]);
