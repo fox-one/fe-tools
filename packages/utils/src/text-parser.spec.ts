@@ -95,11 +95,13 @@ describe("text parser methods", () => {
   it("runParser", () => {
     const ts: any = [
       [
-        "I have 1 $BTC for my #Family.\npls visit https://pando.im to learn more"
+        "I have 1 $BTC for my #Family.\npls visit https://pando.im to learn more",
+        "I have 1 $XIN for myself"
       ]
     ];
     const results = [
-      'I have 1 <span class="--fe-text-parser-token-asset" data-symbol="BTC">$BTC</span> for my <span class="--fe-text-parser-token-hash-tag" data-hash-tag="Family">#Family</span>.<br/>pls visit <a class="--fe-text-parser-token-link" href="https://pando.im" target="_blank">https://pando.im</a> to learn more'
+      'I have 1 <span class="--fe-text-parser-token-asset" data-symbol="BTC">$BTC</span> for my <span class="--fe-text-parser-token-hash-tag" data-hash-tag="Family">#Family</span>.<br/>pls visit <a class="--fe-text-parser-token-link" href="https://pando.im" target="_blank">https://pando.im</a> to learn more',
+      'I have 1 <span class="--fe-text-parser-token-asset" data-symbol="XIN">$XIN</span> for myself'
     ];
 
     const parser = new text.TextParser();
@@ -114,10 +116,12 @@ describe("text parser methods", () => {
 
   it("runCustomizedParser", () => {
     const ts: any = [
-      ["I have 1 $BTC for my family.\npls ask @john to learn more"]
+      ["I have 1 $BTC for my family.\npls ask @john to learn more"],
+      ["I am @lyric."]
     ];
     const results = [
-      'I have 1 <span class="--fe-text-parser-token-asset asset-token-cls" data-symbol="BTC">$BTC</span> for my family.<br/>pls ask <em class="username" data-username="john">@John Smith</em> to learn more'
+      'I have 1 <span class="--fe-text-parser-token-asset asset-token-cls" data-symbol="BTC">$BTC</span> for my family.<br/>pls ask <em class="username" data-username="john">@John Smith</em> to learn more',
+      'I am <em class="username" data-username="lyric">@Lyric</em>.'
     ];
 
     const tokenName = "user";
@@ -185,29 +189,29 @@ describe("text parser methods", () => {
       return `<em class="username" data-username="${token.v.username}">${token.v.label}</em>`;
     };
 
-    const parser = new text.TextParser(cfg, [
-      {
-        formatter,
-        params: {
-          tokenName,
-          users: [
-            {
-              fullname: "Lyric",
-              id: 1024,
-              username: "lyric"
-            },
-            {
-              fullname: "John Smith",
-              id: 1025,
-              username: "john"
-            }
-          ]
-        },
-        proc
-      }
-    ]);
-
     ts.forEach((_, i) => {
+      const parser = new text.TextParser(cfg, [
+        {
+          formatter,
+          params: {
+            tokenName,
+            users: [
+              {
+                fullname: "Lyric",
+                id: 1024,
+                username: "lyric"
+              },
+              {
+                fullname: "John Smith",
+                id: 1025,
+                username: "john"
+              }
+            ]
+          },
+          proc
+        }
+      ]);
+
       const r = parser.parse(ts[i][0]);
 
       // console.log(r);
