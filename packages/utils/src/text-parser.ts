@@ -1,7 +1,7 @@
 const linkPrefixes = ["https://", "http://"];
 const clsPrefix = "--fe-text-parser";
 
-const defaultConfig = {
+export const defaultConfig = {
   clsAssetToken: `${clsPrefix}-token-asset`,
   clsHashTagToken: `${clsPrefix}-token-hash-tag`,
   clsLinkToken: `${clsPrefix}-token-link`,
@@ -9,7 +9,7 @@ const defaultConfig = {
 };
 
 export class TextParser {
-  private config = defaultConfig;
+  private config = Object.assign({}, defaultConfig);
 
   private debugMode = false;
 
@@ -38,7 +38,7 @@ export class TextParser {
       cfg.clsAssetToken = `${defaultConfig.clsAssetToken} ${cfg.clsAssetToken}`;
     }
 
-    this.config = Object.assign(defaultConfig, cfg);
+    this.config = Object.assign(this.config, cfg);
 
     // add builtin parsers
     // link token parser
