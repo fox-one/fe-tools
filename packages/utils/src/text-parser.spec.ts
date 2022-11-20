@@ -114,6 +114,26 @@ describe("text parser methods", () => {
     });
   });
 
+  it("runImageParser", () => {
+    const ts: any = [
+      ["here is an image: https://pando.im/images/logo-with-text.svg"]
+    ];
+    const results = [
+      'here is an image: <img class="--fe-text-parser-token-link --fe-text-parser-token-image-link" src="https://pando.im/images/logo-with-text.svg" />'
+    ];
+
+    const parser = new text.TextParser({
+      autoRecogniseImages: true
+    });
+
+    ts.forEach((_, i) => {
+      const r = parser.parse(ts[i][0]);
+
+      // console.log(r);
+      expect(r).toEqual(results[i]);
+    });
+  });
+
   it("runCustomizedParser", () => {
     const ts: any = [
       ["I have 1 $BTC for my family.\npls ask @john to learn more"],
