@@ -2,8 +2,10 @@ const linkPrefixes = ["https://", "http://"];
 const clsPrefix = "--fe-text-parser";
 
 export const defaultConfig = {
+  autoRecogniseImages: false,
   clsAssetToken: `${clsPrefix}-token-asset`,
   clsHashTagToken: `${clsPrefix}-token-hash-tag`,
+  clsImageLinkToken: `${clsPrefix}-token-image-link`,
   clsLinkToken: `${clsPrefix}-token-link`,
   clsUserToken: `${clsPrefix}-token-user`
 };
@@ -18,10 +20,27 @@ export class TextParser {
       `<span class="${this.config.clsAssetToken}" data-symbol="${symbol}">${label}</span>`,
     hashTag: (hashTag, label: string) =>
       `<span class="${this.config.clsHashTagToken}" data-hash-tag="${hashTag}">${label}</span>`,
-    link: (url, label: string) =>
-      `<a class="${this.config.clsLinkToken}" href="${url}" target="_blank">${
-        label || url
-      }</a>`
+    link: (url, label: string) => {
+      if (this.config.autoRecogniseImages) {
+        let isImg = false;
+        const suffix = ["webp", "jpg", "png", "svg"];
+
+        for (let ix = 0; ix < suffix.length; ix++) {
+          if (url.endsWith(suffix[ix])) {
+            isImg = true;
+            break;
+          }
+        }
+
+        if (isImg) {
+          return `<img class="${this.config.clsLinkToken} ${this.config.clsImageLinkToken}" src="${url}" />`;
+        }
+      }
+
+      return `<a class="${
+        this.config.clsLinkToken
+      }" href="${url}" target="_blank">${label || url}</a>`;
+    }
   };
 
   private parsers: any = [];
