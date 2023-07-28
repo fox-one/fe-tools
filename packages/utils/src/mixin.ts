@@ -72,5 +72,7 @@ export function genPaymentUrl(data: {
 }) {
   const { amount, assetId, memo, recipient, traceId } = data;
 
-  return `mixin://pay?recipient=${recipient}&asset=${assetId}&amount=${amount}&trace=${traceId}&memo=${memo}`;
+  return `mixin://pay?recipient=${recipient}&asset=${assetId}&amount=${amount}&trace=${traceId}&memo=${encodeURIComponent(
+    memo
+  )}`;
 }

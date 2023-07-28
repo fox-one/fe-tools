@@ -1,4 +1,4 @@
-export function debounce<T extends (...args: unknown[]) => void>(
+export function debounce<T extends (...args: any[]) => void>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -10,7 +10,7 @@ export function debounce<T extends (...args: unknown[]) => void>(
   };
 }
 
-export function throttle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends (...args: any[]) => unknown>(
   fn: T,
   limit: number
 ): (...args: Parameters<T>) => ReturnType<T> | void {
