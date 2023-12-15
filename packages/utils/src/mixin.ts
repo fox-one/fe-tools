@@ -63,6 +63,58 @@ export function isDarkTheme() {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
 }
 
+type Asset = {
+  symbol: string;
+  name: string;
+  icon_url: string;
+  chain_id: string;
+  balance: string;
+  asset_id: string;
+};
+
+export async function getAssets(ids: string[]): Promise<Asset[]> {
+  const win: any = window;
+
+  return new Promise((resolve, reject) => {
+    (window as any).MixinBridgeAssetsCallbackFunction = function (resp) {
+      resolve(resp);
+    };
+
+    if (
+      win.webkit &&
+      win.webkit.messageHandlers &&
+      win.webkit.messageHandlers.MixinContext &&
+      win.webkit.messageHandlers.getAssets
+    ) {
+      win.webkit.messageHandlers.getAssets.postMessage([
+        ids,
+        "MixinBridgeAssetsCallbackFunction"
+      ]);
+    } else if (
+      win.MixinContext &&
+      typeof win.MixinContext.getAssets === "function"
+    ) {
+      win.MixinContext.getAssets(ids, "MixinBridgeAssetsCallbackFunction");
+    } else {
+      reject(new Error("no support getAssets"));
+    }
+  });
+}
+
+export function genSafePaymentUrl(params: {
+  recipient: string;
+  assetId: string;
+  amount: string;
+  traceId: string;
+  memo: string;
+}) {
+  return `https://mixin.one/pay/${params.recipient}?asset=${
+    params.assetId
+  }&amount=${params.amount}&memo=${encodeURIComponent(params.memo)}&trace=${
+    params.traceId
+  }`;
+}
+
 export function genPaymentUrl(data: {
   recipient: string;
   assetId: string;
