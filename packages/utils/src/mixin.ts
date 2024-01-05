@@ -1,3 +1,5 @@
+import { gte } from "semver";
+
 export function getMixinContext() {
   let ctx: any = {};
   const win: any = window;
@@ -17,6 +19,33 @@ export function isMixin() {
   const platform = getMixinContext().platform;
 
   return platform === "iOS" || platform === "Android";
+}
+
+export function getFallbackMixinContext() {
+  const ua = navigator.userAgent;
+  const platform = /iPhone/i.test(ua)
+    ? "iOS"
+    : isMixin()
+    ? "Android"
+    : undefined;
+  const appVersion =
+    /Mixin\/(?<version>[\d | .]+)/.exec(ua)?.groups?.version ?? undefined;
+
+  return { app_version: appVersion, platform };
+}
+
+export function checkMixinVersion(supportVersion: {
+  Android?: string;
+  iOS?: string;
+}) {
+  const mixinContext = getMixinContext();
+  const fallbackMixinContext = getFallbackMixinContext();
+  const platform =
+    (mixinContext?.platform || fallbackMixinContext.platform) ?? "";
+  const appVersion =
+    (mixinContext?.app_version || fallbackMixinContext.app_version) ?? "0.0.0";
+
+  return gte(appVersion, supportVersion[platform]);
 }
 
 export function setMixinTheme(color: string) {
