@@ -1507,7 +1507,7 @@ __metadata:
     jest-haste-map: ^26.6.2
     jest-resolve: ^26.6.2
     madge: ^4.0.2
-    minimatch: ^3.0.4
+    minimatch: ^3.0.5
     mkdirp: ^1.0.4
     prettier: ^2.2.1
     react: ^17.0.2
@@ -7589,6 +7589,15 @@ __metadata:
   dependencies:
     brace-expansion: ^1.1.7
   checksum: 47eab9263962cacd5733e274ecad2d8e54b0f8e124ba35ae69189e296058f634a4967b87a98954f86fa5c830ff177caf827ce0136d28717ed3232951fb4fae62
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:^3.0.5":
+  version: 3.1.2
+  resolution: "minimatch@npm:3.1.2"
+  dependencies:
+    brace-expansion: ^1.1.7
+  checksum: 1a7584a6de279285a62c3b0ab2f3effde12566a5df983fb2a4f2eb9262f44238c7e2c692f202b075dc3df79c9a8479a22833cc28c841e98fa3ef989b1ceb264e
   languageName: node
   linkType: hard
 
