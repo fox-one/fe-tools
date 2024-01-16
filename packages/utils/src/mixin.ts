@@ -106,7 +106,11 @@ export async function getAssets(ids: string[]): Promise<Asset[]> {
 
   return new Promise((resolve, reject) => {
     (window as any).MixinBridgeAssetsCallbackFunction = function (resp) {
-      resolve(resp);
+      try {
+        resolve(JSON.parse(resp));
+      } catch (error) {
+        reject(error);
+      }
     };
 
     if (
